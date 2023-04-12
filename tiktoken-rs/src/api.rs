@@ -1,12 +1,22 @@
 use anyhow::{anyhow, Result};
 
 use crate::{
-    cl100k_base,
     model::get_context_size,
-    p50k_base, p50k_edit, r50k_base,
     tokenizer::{get_tokenizer, Tokenizer},
     CoreBPE,
 };
+
+#[cfg(feature = "p50k_base")]
+use crate::p50k_base;
+
+#[cfg(feature = "p50k_edit")]
+use crate::p50k_edit;
+
+#[cfg(feature = "r50k_base")]
+use crate::r50k_base;
+
+#[cfg(feature = "cl100k_base")]
+use crate::cl100k_base;
 
 /// Calculates the maximum number of tokens available for completion based on the model and prompt provided.
 ///
@@ -236,11 +246,17 @@ pub fn get_bpe_from_model(model: &str) -> Result<CoreBPE> {
 /// If successful, the function returns a `Result` containing the `CoreBPE` instance corresponding to the given tokenizer.
 pub fn get_bpe_from_tokenizer(tokenizer: Tokenizer) -> Result<CoreBPE> {
     match tokenizer {
+        #[cfg(feature = "cl100k_base")]
         Tokenizer::Cl100kBase => cl100k_base(),
+        #[cfg(feature = "r50k_base")]
         Tokenizer::R50kBase => r50k_base(),
+        #[cfg(feature = "p50k_base")]
         Tokenizer::P50kBase => p50k_base(),
+        #[cfg(feature = "p50k_edit")]
         Tokenizer::P50kEdit => p50k_edit(),
+        #[cfg(feature = "r50k_base")]
         Tokenizer::Gpt2 => r50k_base(),
+        _ => unreachable!(),
     }
 }
 

@@ -23,5 +23,13 @@ pyo3 = { version = "0.18.1", optional = true }
 rustc-hash = "1.1.0"
 
 [features]
-python = ["dep:pyo3"] # build python bindings
+
+default = ["cl100k_base", "p50k_base", "p50k_edit", "r50k_base"]
+
+python = ["dep:pyo3"]               # build python bindings
 async-openai = ["dep:async-openai"]
+
+cl100k_base = []
+p50k_base = []
+p50k_edit = []
+r50k_base = []
